@@ -10,6 +10,25 @@ class UsersController < ApplicationController
         render json: @user, status: :created
     end
 
+    def login
+        @user = User.find_by username: params[:user][:username]
+
+        if !@user
+            render json: { error: 'Invalid username and/or password' }, status: :unauthorized
+        else
+            #authenticate is a bcrypt method
+            if !@user.authenticate params[:user][:password]
+                render json: { error: 'Invalid username and/or password' }, status: :unauthorized
+            else
+                payload = { user_id: @user.id }
+                secret = '1234abcd'
+                @token = JWT.encode payload, secret
+                render json: { token: @token }, status: :ok
+            end
+            
+        end
+    end
+
     private 
 
     def user_params
