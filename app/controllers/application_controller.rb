@@ -11,7 +11,9 @@ class ApplicationController < ActionController::API
             token = auth_header.split(' ')[1]
             secret = '1234abcd'
             begin
-                JWT.decode token, secret
+                decoded_token = JWT.decode token, secret
+                payload = decoded_token.first
+                @user = User.find payload['user_id']
             rescue
                 render json: { error: 'Bad token'}, status: :forbidden
             end  

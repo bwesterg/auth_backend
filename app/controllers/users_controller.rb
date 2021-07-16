@@ -7,6 +7,10 @@ class UsersController < ApplicationController
         render json: @users, status: :ok
     end
 
+    def profile
+        render json: @user, status: :ok
+    end
+
     def create
         @user = User.create user_params
         render json: @user, status: :created
